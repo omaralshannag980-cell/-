@@ -63,16 +63,15 @@ StopButton.Parent = MainFrame
 
 local SideButton = Instance.new("TextButton")
 SideButton.Name = "SideButton"
-SideButton.Size = UDim2.new(0, 45, 0, 130)
-SideButton.Position = UDim2.new(0.5, 120, 0.5, -65)
+SideButton.Size = UDim2.new(0, 40, 0, 40)
+SideButton.Position = UDim2.new(0.5, 120, 0.5, -20)
 SideButton.BackgroundColor3 = Color3.fromRGB(0, 110, 255)
 SideButton.BorderColor3 = Color3.fromRGB(0, 80, 180)
 SideButton.BorderSizePixel = 2
 SideButton.Text = "ترفكسا🏴‍☠️"
 SideButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 SideButton.Font = Enum.Font.GothamBold
-SideButton.TextSize = 16
-SideButton.Rotation = 90
+SideButton.TextScaled = true
 SideButton.Active = true
 SideButton.Draggable = true
 SideButton.Parent = ScreenGui
@@ -90,6 +89,10 @@ local function startClicking()
             task.wait(0.01)
             VIM:SendMouseButtonEvent(x, y, 0, false, game, 1)
             task.wait(0.1)
+            VIM:SendMouseButtonEvent(x, y, 1, true, game, 1)
+            task.wait(0.01)
+            VIM:SendMouseButtonEvent(x, y, 1, false, game, 1)
+            task.wait(0.1)
         end
     end)
 end
@@ -104,3 +107,7 @@ end
 
 StartButton.MouseButton1Click:Connect(startClicking)
 StopButton.MouseButton1Click:Connect(stopClicking)
+
+SideButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
