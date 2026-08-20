@@ -8,8 +8,8 @@ ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 240, 0, 180)
-MainFrame.Position = UDim2.new(0.5, -120, 0.5, -90)
+MainFrame.Size = UDim2.new(0, 240, 0, 230)
+MainFrame.Position = UDim2.new(0.5, -120, 0.5, -115)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 MainFrame.BorderColor3 = Color3.fromRGB(0, 140, 255)
 MainFrame.BorderSizePixel = 2
@@ -29,7 +29,7 @@ Title.Parent = MainFrame
 
 local SpeedLabel = Instance.new("TextLabel")
 SpeedLabel.Size = UDim2.new(1, 0, 0, 25)
-SpeedLabel.Position = UDim2.new(0, 0, 0.3, 0)
+SpeedLabel.Position = UDim2.new(0, 0, 0.25, 0)
 SpeedLabel.BackgroundTransparency = 1
 SpeedLabel.Text = "السرعة: 0.1 ثانية"
 SpeedLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -39,7 +39,7 @@ SpeedLabel.Parent = MainFrame
 
 local StartButton = Instance.new("TextButton")
 StartButton.Size = UDim2.new(0, 100, 0, 45)
-StartButton.Position = UDim2.new(0.08, 0, 0.65, 0)
+StartButton.Position = UDim2.new(0.08, 0, 0.55, 0)
 StartButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
 StartButton.BorderColor3 = Color3.fromRGB(0, 80, 180)
 StartButton.BorderSizePixel = 2
@@ -51,7 +51,7 @@ StartButton.Parent = MainFrame
 
 local StopButton = Instance.new("TextButton")
 StopButton.Size = UDim2.new(0, 100, 0, 45)
-StopButton.Position = UDim2.new(0.52, 0, 0.65, 0)
+StopButton.Position = UDim2.new(0.52, 0, 0.55, 0)
 StopButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 StopButton.BorderColor3 = Color3.fromRGB(0, 140, 255)
 StopButton.BorderSizePixel = 2
@@ -60,6 +60,18 @@ StopButton.TextColor3 = Color3.fromRGB(0, 150, 255)
 StopButton.Font = Enum.Font.GothamBold
 StopButton.TextSize = 16
 StopButton.Parent = MainFrame
+
+local AddSquareButton = Instance.new("TextButton")
+AddSquareButton.Size = UDim2.new(0, 130, 0, 40)
+AddSquareButton.Position = UDim2.new(0.23, 0, 0.82, 0)
+AddSquareButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+AddSquareButton.BorderColor3 = Color3.fromRGB(0, 80, 180)
+AddSquareButton.BorderSizePixel = 2
+AddSquareButton.Text = "إضافة مربع"
+AddSquareButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+AddSquareButton.Font = Enum.Font.GothamBold
+AddSquareButton.TextSize = 15
+AddSquareButton.Parent = MainFrame
 
 local SideButton = Instance.new("TextButton")
 SideButton.Name = "SideButton"
@@ -78,21 +90,42 @@ SideButton.Parent = ScreenGui
 
 local isClicking = false
 local clickThread = nil
+local squares = {}
+
+local function addSquare()
+    local square = Instance.new("Frame")
+    square.Size = UDim2.new(0, 50, 0, 50)
+    square.Position = UDim2.new(0.5, -25, 0.5, -25)
+    square.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    square.BackgroundTransparency = 0.5
+    square.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    square.BorderSizePixel = 1
+    square.Active = true
+    square.Draggable = true
+    square.Parent = ScreenGui
+    table.insert(squares, square)
+end
 
 local function startClicking()
     if isClicking then return end
     isClicking = true
     clickThread = task.spawn(function()
         while isClicking do
-            local x, y = mouse.X, mouse.Y
-            VIM:SendMouseButtonEvent(x, y, 0, true, game, 1)
-            task.wait(0.01)
-            VIM:SendMouseButtonEvent(x, y, 0, false, game, 1)
-            task.wait(0.1)
-            VIM:SendMouseButtonEvent(x, y, 1, true, game, 1)
-            task.wait(0.01)
-            VIM:SendMouseButtonEvent(x, y, 1, false, game, 1)
-            task.wait(0.1)
+            for _, square in ipairs(squares) do
+                local centerX = square.AbsolutePosition.X + square.AbsoluteSize.X / 2
+                local centerY = square.AbsolutePosition.Y + square.AbsoluteSize.Y / 2
+
+                VIM:SendMouseButtonEvent(centerX, centerY, 0, true, game, 1)
+                task.wait(0.01)
+                VIM:SendMouseButtonEvent(centerX, centerY, 0, false, game, 1)
+                task.wait(0.1)
+
+                VIM:SendMouseButtonEvent(centerX, centerY, 1, true, game, 1)
+                task.wait(0.01)
+                VIM:SendMouseButtonEvent(centerX, centerY, 1, false, game, 1)
+                task.wait(0.1)
+            end
+            task.wait(0.05)
         end
     end)
 end
@@ -107,6 +140,7 @@ end
 
 StartButton.MouseButton1Click:Connect(startClicking)
 StopButton.MouseButton1Click:Connect(stopClicking)
+AddSquareButton.MouseButton1Click:Connect(addSquare)
 
 SideButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
