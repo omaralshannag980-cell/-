@@ -8,8 +8,8 @@ ScreenGui.Parent = player:WaitForChild("PlayerGui")
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 240, 0, 230)
-MainFrame.Position = UDim2.new(0.5, -120, 0.5, -115)
+MainFrame.Size = UDim2.new(0, 240, 0, 280)  -- زيادة الارتفاع ليتسع الزر الجديد
+MainFrame.Position = UDim2.new(0.5, -120, 0.5, -140)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 MainFrame.BorderColor3 = Color3.fromRGB(0, 140, 255)
 MainFrame.BorderSizePixel = 2
@@ -29,7 +29,7 @@ Title.Parent = MainFrame
 
 local SpeedLabel = Instance.new("TextLabel")
 SpeedLabel.Size = UDim2.new(1, 0, 0, 25)
-SpeedLabel.Position = UDim2.new(0, 0, 0.25, 0)
+SpeedLabel.Position = UDim2.new(0, 0, 0.2, 0)
 SpeedLabel.BackgroundTransparency = 1
 SpeedLabel.Text = "السرعة: 0.1 ثانية"
 SpeedLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -39,7 +39,7 @@ SpeedLabel.Parent = MainFrame
 
 local StartButton = Instance.new("TextButton")
 StartButton.Size = UDim2.new(0, 100, 0, 45)
-StartButton.Position = UDim2.new(0.08, 0, 0.55, 0)
+StartButton.Position = UDim2.new(0.08, 0, 0.42, 0)
 StartButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
 StartButton.BorderColor3 = Color3.fromRGB(0, 80, 180)
 StartButton.BorderSizePixel = 2
@@ -51,7 +51,7 @@ StartButton.Parent = MainFrame
 
 local StopButton = Instance.new("TextButton")
 StopButton.Size = UDim2.new(0, 100, 0, 45)
-StopButton.Position = UDim2.new(0.52, 0, 0.55, 0)
+StopButton.Position = UDim2.new(0.52, 0, 0.42, 0)
 StopButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 StopButton.BorderColor3 = Color3.fromRGB(0, 140, 255)
 StopButton.BorderSizePixel = 2
@@ -63,7 +63,7 @@ StopButton.Parent = MainFrame
 
 local AddSquareButton = Instance.new("TextButton")
 AddSquareButton.Size = UDim2.new(0, 130, 0, 40)
-AddSquareButton.Position = UDim2.new(0.23, 0, 0.82, 0)
+AddSquareButton.Position = UDim2.new(0.23, 0, 0.62, 0)
 AddSquareButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
 AddSquareButton.BorderColor3 = Color3.fromRGB(0, 80, 180)
 AddSquareButton.BorderSizePixel = 2
@@ -72,6 +72,19 @@ AddSquareButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 AddSquareButton.Font = Enum.Font.GothamBold
 AddSquareButton.TextSize = 15
 AddSquareButton.Parent = MainFrame
+
+-- الزر الجديد: إزالة كل المربعات
+local RemoveSquaresButton = Instance.new("TextButton")
+RemoveSquaresButton.Size = UDim2.new(0, 130, 0, 40)
+RemoveSquaresButton.Position = UDim2.new(0.23, 0, 0.8, 0)
+RemoveSquaresButton.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+RemoveSquaresButton.BorderColor3 = Color3.fromRGB(120, 20, 20)
+RemoveSquaresButton.BorderSizePixel = 2
+RemoveSquaresButton.Text = "إزالة كل المربعات"
+RemoveSquaresButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+RemoveSquaresButton.Font = Enum.Font.GothamBold
+RemoveSquaresButton.TextSize = 14
+RemoveSquaresButton.Parent = MainFrame
 
 local SideButton = Instance.new("TextButton")
 SideButton.Name = "SideButton"
@@ -104,6 +117,14 @@ local function addSquare()
     square.Draggable = true
     square.Parent = ScreenGui
     table.insert(squares, square)
+end
+
+-- دالة حذف جميع المربعات
+local function removeAllSquares()
+    for _, square in ipairs(squares) do
+        square:Destroy()
+    end
+    squares = {}  -- تفريغ القائمة
 end
 
 local function startClicking()
@@ -141,6 +162,7 @@ end
 StartButton.MouseButton1Click:Connect(startClicking)
 StopButton.MouseButton1Click:Connect(stopClicking)
 AddSquareButton.MouseButton1Click:Connect(addSquare)
+RemoveSquaresButton.MouseButton1Click:Connect(removeAllSquares)
 
 SideButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
